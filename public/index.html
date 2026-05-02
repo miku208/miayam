@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Minecraft Server Landing</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Minecraft Server" id="og-title">
+    <meta property="og:description" content="Best Minecraft Server with unique features" id="og-desc">
+    <meta property="og:image" content="assets/images/og-image.jpg" id="og-image">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://yourdomain.com" id="og-url">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Minecraft Server" id="og-site-name">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="assets/images/og-image.jpg" id="twitter-image">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Floating Social Buttons -->
+    <div class="social-floating">
+        <a href="#" class="social-btn" id="social-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-btn" id="social-discord" target="_blank"><i class="fab fa-discord"></i></a>
+        <a href="#" class="social-btn" id="social-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <img src="assets/images/logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
+                <span id="server-name">Minecraft Server</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="admin.html">Admin</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" id="hero-title">Loading...</h1>
+                <p class="hero-tagline" id="hero-tagline">Your adventure awaits!</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="join-btn">
+                        <i class="fas fa-gamepad"></i> JOIN SERVER
+                    </button>
+                </div>
+                
+                <div class="server-ip-box">
+                    <img src="assets/images/logo.png" alt="Server Logo" class="ip-logo" onerror="this.style.display='none'">
+                    <div class="ip-content">
+                        <span class="ip-label">Server IP:</span>
+                        <span class="ip-address" id="server-ip">loading...</span>
+                        <button class="copy-ip-btn" onclick="copyIP()" title="Click to copy IP">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="server-status">
+                    <span id="status-indicator" class="status-loading"></span>
+                    <span id="status-text">Checking...</span>
+                    <span id="player-count"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Server Info Section -->
+    <section class="server-info">
+        <div class="container">
+            <h2 class="section-title">Server <span class="highlight">Information</span></h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>IP Address</h3>
+                    <p id="info-ip">-</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-plug"></i>
+                    <h3>Port</h3>
+                    <p id="info-port">-</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-server"></i>
+                    <h3>Status</h3>
+                    <p id="info-status">-</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Players Online</h3>
+                    <p id="info-players">-</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Community</h3>
+                    <p id="info-community">-</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Server <span class="highlight">Features</span></h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-coins"></i></div>
+                    <h3>Economy</h3>
+                    <p>Sistem ekonomi lengkap dengan mata uang "MieCoin".</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Claim Land</h3>
+                    <p>Lindungi area bangunanmu dengan sistem claim mudah.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Team System</h3>
+                    <p>Buat team, share base, dan kerja sama dengan teman.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>Bounty</h3>
+                    <p>Pasang bounty pada pemain dan dapatkan hadiah.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                    <h3>Custom Enchant</h3>
+                    <p>30+ enchant unik seperti Teleport, Explosive, dll.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-gift"></i></div>
+                    <h3>Gacha System</h3>
+                    <p>Roll gacha untuk dapatkan item langka dan rank.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-fist-raised"></i></div>
+                    <h3>PvP Arena</h3>
+                    <p>Arena PvP 1v1, 2v2, dan FFA dengan leaderboard.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>AFK Arena</h3>
+                    <p>Dapatkan reward hanya dengan AFK di arena khusus.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-coins"></i></div>
+                    <h3>Coinflip</h3>
+                    <p>Gacha 50/50, lipat gandakan coin atau hilang.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3>Skill System</h3>
+                    <p>Upgrade skill mining, farming, combat, dll.</p>
+                    <div class="pixel-corner"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcement Section -->
+    <section class="announcement" id="announcement-section" style="display: none;">
+        <div class="container">
+            <div class="announcement-card">
+                <i class="fas fa-bullhorn"></i>
+                <div class="announcement-content">
+                    <h3 id="announcement-title">Announcement</h3>
+                    <p id="announcement-content">Loading announcement...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-cube"></i> <span id="footer-name">Server</span></h3>
+                    <p>Best Minecraft experience</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="shop.html">Shop</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="footer-social">
+                        <a href="#" id="footer-wa"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" id="footer-discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" id="footer-tiktok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Minecraft Server. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast">IP Copied!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
