@@ -4,78 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - Minecraft Server</title>
-    
     <link rel="icon" type="image/png" href="assets/images/logo.png">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
-    
-    <link rel="stylesheet" href="/public/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0e1a 0%, #0f1322 100%); color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .navbar { background: rgba(10,14,26,0.95); backdrop-filter: blur(10px); padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; border-bottom: 1px solid rgba(88,101,242,0.2); }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; font-size: 1.5rem; font-weight: bold; color: #5865f2; }
+        .nav-logo { height: 35px; width: auto; margin-right: 10px; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: #fff; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: #5865f2; }
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
+        
+        .shop-hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(135deg, #0a0e1a, #1a1f2e); }
+        .shop-hero h1 { font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, #5865f2, #7289da); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .shop-hero p { color: #b9bbbe; }
+        
+        .ranks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding: 60px 0; }
+        .rank-card { background: linear-gradient(135deg, #1e2230, #181c2a); border-radius: 20px; padding: 1.8rem; transition: all 0.3s; border: 1px solid rgba(88,101,242,0.3); }
+        .rank-card:hover { transform: translateY(-8px); border-color: #5865f2; box-shadow: 0 20px 40px rgba(88,101,242,0.2); }
+        .rank-card h3 { font-size: 1.8rem; margin-bottom: 0.5rem; color: #5865f2; }
+        .rank-price { font-size: 2rem; font-weight: bold; margin: 0.8rem 0; color: #57f287; display: inline-block; padding: 0.2rem 1rem; background: rgba(87,242,135,0.1); border-radius: 40px; }
+        .rank-description { color: #b9bbbe; margin-bottom: 1rem; font-size: 0.9rem; }
+        .rank-benefits { list-style: none; margin: 1.2rem 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .rank-benefits li { padding: 4px 10px; font-size: 0.8rem; color: #b9bbbe; background: rgba(255,255,255,0.05); border-radius: 20px; }
+        .rank-benefits li::before { content: '✓ '; color: #57f287; }
+        .btn-buy { background: #57f287; color: #1e2230; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: all 0.3s; }
+        .btn-buy:hover { background: #3ba55d; transform: translateY(-2px); }
+        
+        .footer { background: #0a0e1a; padding: 60px 0 20px; border-top: 1px solid rgba(88,101,242,0.2); }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem; }
+        .footer-section h3, .footer-section h4 { margin-bottom: 1rem; }
+        .footer-section a { display: block; color: #b9bbbe; text-decoration: none; margin-bottom: 0.5rem; }
+        .footer-section a:hover { color: #5865f2; }
+        .footer-social { display: flex; gap: 1rem; }
+        .footer-social a { font-size: 1.5rem; }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: #b9bbbe; }
+        
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #5865f2; color: white; padding: 10px 20px; border-radius: 8px; opacity: 0; transition: opacity 0.3s; z-index: 2000; }
+        .toast.show { opacity: 1; }
+        .loading-spinner { text-align: center; padding: 40px; }
+        .loading-spinner i { font-size: 2rem; color: #5865f2; }
+        
+        @media (max-width: 768px) { .nav-links { display: none; } .menu-toggle { display: block; } .ranks-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="nav-brand">
-                <img src="assets/images/logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
-                <span id="server-name">Minecraft Server</span>
-            </div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="shop.html">Shop</a>
-                <a href="admin.html">Admin</a>
-            </div>
-            <div class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
+            <div class="nav-brand"><img src="assets/images/logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'"><span id="server-name">Minecraft Server</span></div>
+            <div class="nav-links"><a href="index.html">Home</a><a href="shop.html">Shop</a><a href="admin.html">Admin</a></div>
+            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
         </div>
     </nav>
 
-    <section class="shop-hero">
-        <div class="container">
-            <h1>🎮 Rank Shop</h1>
-            <p>Purchase ranks to enhance your gameplay experience</p>
-        </div>
-    </section>
+    <section class="shop-hero"><div class="container"><h1>🎮 Rank Shop</h1><p>Purchase ranks to enhance your gameplay experience</p></div></section>
 
-    <section class="shop-grid">
-        <div class="container">
-            <div class="ranks-grid" id="ranks-grid">
-                <div class="loading-spinner">
-                    <i class="fas fa-spinner fa-spin"></i> Loading ranks...
-                </div>
-            </div>
-        </div>
-    </section>
+    <section class="shop-grid"><div class="container"><div class="ranks-grid" id="ranks-grid"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading ranks...</div></div></div></section>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3><i class="fas fa-cube"></i> <span id="footer-name">Server</span></h3>
-                    <p>Best Minecraft experience</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="index.html">Home</a>
-                    <a href="shop.html">Shop</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Connect With Us</h4>
-                    <div class="footer-social">
-                        <a href="#" id="footer-wa"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" id="footer-discord"><i class="fab fa-discord"></i></a>
-                        <a href="#" id="footer-tiktok"><i class="fab fa-tiktok"></i></a>
-                    </div>
-                </div>
+                <div class="footer-section"><h3><i class="fas fa-cube"></i> <span id="footer-name">Server</span></h3><p>Best Minecraft experience</p></div>
+                <div class="footer-section"><h4>Quick Links</h4><a href="index.html">Home</a><a href="shop.html">Shop</a></div>
+                <div class="footer-section"><h4>Connect With Us</h4><div class="footer-social"><a href="#" id="footer-wa"><i class="fab fa-whatsapp"></i></a><a href="#" id="footer-discord"><i class="fab fa-discord"></i></a><a href="#" id="footer-tiktok"><i class="fab fa-tiktok"></i></a></div></div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Minecraft Server. All rights reserved.</p>
-            </div>
+            <div class="footer-bottom"><p>&copy; 2024 Minecraft Server. All rights reserved.</p></div>
         </div>
     </footer>
 
     <div id="toast" class="toast">Redirecting to WhatsApp...</div>
 
-    <script src="script.js"></script>
+    <script>
+        let settings = {};
+        let whatsappLink = '';
+
+        async function init() {
+            await fetchSettings();
+            await fetchRanks();
+        }
+
+        async function fetchSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                settings = await response.json();
+                document.querySelectorAll('#server-name, #footer-name').forEach(el => {
+                    if (el) el.textContent = settings.server_name || 'Minecraft Server';
+                });
+                whatsappLink = settings.wa_link;
+            } catch (error) { console.error(error); }
+        }
+
+        async function fetchRanks() {
+            const ranksGrid = document.getElementById('ranks-grid');
+            if (!ranksGrid) return;
+            try {
+                const response = await fetch('/api/ranks');
+                const ranks = await response.json();
+                const activeRanks = ranks.filter(rank => rank.is_active);
+                if (activeRanks.length === 0) { ranksGrid.innerHTML = '<p style="text-align:center">No ranks available</p>'; return; }
+                ranksGrid.innerHTML = activeRanks.map(rank => `
+                    <div class="rank-card">
+                        <h3>${escapeHtml(rank.name)}</h3>
+                        <div class="rank-price">Rp ${formatNumber(rank.price)}</div>
+                        <p class="rank-description">${escapeHtml(rank.description || '')}</p>
+                        <ul class="rank-benefits">
+                            ${rank.benefits ? rank.benefits.split(',').map(b => `<li>✓ ${escapeHtml(b.trim())}</li>`).join('') : '<li>✓ Exclusive perks</li>'}
+                        </ul>
+                        <button class="btn-buy" onclick="buyRank('${rank.name}', ${rank.price})"><i class="fab fa-whatsapp"></i> Buy Now</button>
+                    </div>
+                `).join('');
+            } catch (error) { ranksGrid.innerHTML = '<p style="text-align:center">Error loading ranks</p>'; }
+        }
+
+        function buyRank(rankName, price) {
+            if (whatsappLink) {
+                const message = `Halo%2C%20saya%20tertarik%20untuk%20membeli%20rank%20${encodeURIComponent(rankName)}%20seharga%20Rp%20${formatNumber(price)}.%20Mohon%20informasi%20lebih%20lanjut.`;
+                const url = whatsappLink.includes('?') ? `${whatsappLink}&text=${message}` : `${whatsappLink}?text=${message}`;
+                window.open(url, '_blank');
+                showToast('Redirecting to WhatsApp...');
+            } else { showToast('WhatsApp link not configured'); }
+        }
+
+        function showToast(message) {
+            let toast = document.getElementById('toast');
+            if (!toast) { toast = document.createElement('div'); toast.id = 'toast'; toast.className = 'toast'; document.body.appendChild(toast); }
+            toast.textContent = message; toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+        function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+
+        document.querySelector('.menu-toggle')?.addEventListener('click', () => { const navLinks = document.querySelector('.nav-links'); if (navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex'; });
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
