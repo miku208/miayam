@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
+const { SUPABASE_CONFIG, ADMIN_CONFIG } = require('../config');
 
 const app = express();
 
@@ -11,8 +12,8 @@ app.use(express.json());
 
 // Supabase Client
 const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+    SUPABASE_CONFIG.url,
+    SUPABASE_CONFIG.serviceKey
 );
 
 // ==================== AUTH MIDDLEWARE ====================
@@ -53,28 +54,45 @@ app.post('/api/admin/login', async (req, res) => {
             return res.status(400).json({ error: 'Username and password required' });
         }
         
-        const { data: admin, error } = await supabase
+        let admin = null;
+        let isFromConfig = false;
+        
+        // Coba cari di database
+        const { data: dbAdmin, error: dbError } = await supabase
             .from('admins')
             .select('*')
             .eq('username', username)
             .single();
         
-        if (error || !admin || admin.password !== password) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+        if (!dbError && dbAdmin) {
+            admin = dbAdmin;
+            if (admin.password !== password) {
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+        } else {
+            // Fallback ke config jika database kosong
+            if (username === ADMIN_CONFIG.username && password === ADMIN_CONFIG.password) {
+                isFromConfig = true;
+                admin = { id: 1, username: ADMIN_CONFIG.username, role: 'admin' };
+            } else {
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
         }
         
         const sessionToken = crypto.randomBytes(64).toString('hex');
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24);
         
-        await supabase
-            .from('admin_sessions')
-            .insert({
-                admin_id: admin.id,
-                token: sessionToken,
-                expires_at: expiresAt.toISOString(),
-                created_at: new Date().toISOString()
-            });
+        if (!isFromConfig) {
+            await supabase
+                .from('admin_sessions')
+                .insert({
+                    admin_id: admin.id,
+                    token: sessionToken,
+                    expires_at: expiresAt.toISOString(),
+                    created_at: new Date().toISOString()
+                });
+        }
         
         res.json({
             success: true,
@@ -83,7 +101,7 @@ app.post('/api/admin/login', async (req, res) => {
             admin: {
                 id: admin.id,
                 username: admin.username,
-                role: admin.role
+                role: admin.role || 'admin'
             }
         });
         
@@ -169,8 +187,7 @@ app.get('/api/ranks', async (req, res) => {
 
 app.post('/api/settings', adminAuth, async (req, res) => {
     try {
-        const { error } = await supabase.from('settings').update(req.body).eq('id', 1);
-        if (error) throw error;
+        await supabase.from('settings').update(req.body).eq('id', 1);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -216,8 +233,7 @@ app.post('/api/ranks', adminAuth, async (req, res) => {
 
 app.put('/api/ranks/:id', adminAuth, async (req, res) => {
     try {
-        const { error } = await supabase.from('ranks').update(req.body).eq('id', req.params.id);
-        if (error) throw error;
+        await supabase.from('ranks').update(req.body).eq('id', req.params.id);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
