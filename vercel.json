@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|avif|json|xml|txt))",
-      "dest": "/public/$1"
+      "dest": "/$1"
     },
     {
       "src": "/api/(.*)",
