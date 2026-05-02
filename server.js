@@ -445,10 +445,26 @@ app.get('/admin.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+// Tambahkan ini di server.js, setelah app.use(express.static...)
+
+// Route manual untuk CSS
+app.get('/style.css', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'style.css'));
+});
+
+app.get('/script.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'script.js'));
+});
+
+app.get('/admin.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.js'));
+});
+
 // 404 handler
 app.use('/api/*', (req, res) => {
     res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.url}` });
 });
+
 
 // Start server
 app.listen(PORT, () => {
