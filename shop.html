@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Minecraft Server</title>
+    
+    <!-- Favicon dari file lokal -->
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <img src="assets/images/logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
+                <span id="server-name">Minecraft Server</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="admin.html">Admin</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="shop-hero">
+        <div class="container">
+            <h1>Rank Shop</h1>
+            <p>Purchase ranks to enhance your gameplay experience</p>
+        </div>
+    </section>
+
+    <section class="shop-grid">
+        <div class="container">
+            <div class="ranks-grid" id="ranks-grid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading ranks...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-cube"></i> <span id="footer-name">Server</span></h3>
+                    <p>Best Minecraft experience</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="shop.html">Shop</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="footer-social">
+                        <a href="#" id="footer-wa"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" id="footer-discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" id="footer-tiktok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Minecraft Server. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast">Redirecting to WhatsApp...</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
