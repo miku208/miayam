@@ -2,125 +2,372 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Admin Panel - Minecraft Server</title>
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #fff; }
-        
-        /* Login Page */
-        .login-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0a0e1a, #1a1f2e); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-        .login-card { background: rgba(30,34,48,0.95); backdrop-filter: blur(10px); border-radius: 24px; padding: 40px; text-align: center; border: 1px solid rgba(88,101,242,0.3); max-width: 400px; width: 90%; }
-        .login-logo-img { width: 80px; height: 80px; margin-bottom: 20px; }
-        .login-card h2 { font-size: 28px; background: linear-gradient(135deg, #5865f2, #7289da); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-group { position: relative; margin-bottom: 20px; }
-        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #5865f2; }
-        .input-group input { width: 100%; padding: 14px 16px 14px 48px; background: #2a2e3d; border: 1px solid #3a3e4d; border-radius: 12px; color: white; font-size: 16px; }
-        .login-btn { background: linear-gradient(135deg, #5865f2, #4752c4); border: none; padding: 14px; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; width: 100%; }
-        
-        /* Dashboard */
-        .admin-container { display: flex; min-height: 100vh; }
-        .admin-sidebar { width: 260px; background: #1e2230; padding: 2rem 0; position: fixed; height: 100vh; overflow-y: auto; border-right: 1px solid rgba(88,101,242,0.2); }
-        .admin-logo { text-align: center; font-size: 1.5rem; font-weight: bold; color: #5865f2; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; }
-        .admin-nav-item { background: transparent; border: none; color: #b9bbbe; padding: 12px 20px; width: 100%; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; }
-        .admin-nav-item.active, .admin-nav-item:hover { background: rgba(88,101,242,0.2); color: #5865f2; border-left: 3px solid #5865f2; }
-        .logout-btn { background: rgba(237,66,69,0.2); border: 1px solid rgba(237,66,69,0.3); padding: 12px; border-radius: 10px; color: #ed4245; cursor: pointer; width: calc(100% - 40px); margin: 20px; }
-        
-        .admin-main { margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
-        .admin-form { background: #1e2230; padding: 2rem; border-radius: 16px; max-width: 800px; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: #b9bbbe; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: #2a2e3d; border: 1px solid #3a3e4d; border-radius: 8px; color: white; }
-        .btn-primary { background: linear-gradient(135deg, #5865f2, #4752c4); border: none; padding: 12px 24px; border-radius: 8px; color: white; cursor: pointer; }
-        
-        .rank-actions-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-        .action-btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
-        .action-btn.primary { background: #5865f2; color: white; }
-        .action-btn.danger { background: #ed4245; color: white; }
-        .action-btn.warning { background: #faa81a; color: #1e2230; }
-        
-        .ranks-table { width: 100%; background: #1e2230; border-collapse: collapse; }
-        .ranks-table th, .ranks-table td { padding: 12px; text-align: left; border-bottom: 1px solid #2a2e3d; }
-        .ranks-table th { background: #2a2e3d; color: #5865f2; }
-        .edit-btn, .delete-btn { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; margin: 0 3px; }
-        .edit-btn { background: #faa81a; color: #1e2230; }
-        .delete-btn { background: #ed4245; color: white; }
-        
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
-        .modal-content { background: #1e2230; margin: 10% auto; padding: 2rem; border-radius: 16px; max-width: 500px; }
-        .close-modal { float: right; font-size: 28px; cursor: pointer; }
-        
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #5865f2; padding: 10px 20px; border-radius: 8px; opacity: 0; transition: opacity 0.3s; z-index: 2000; }
-        .toast.show { opacity: 1; }
-        
-        @media (max-width: 768px) { .admin-sidebar { width: 70px; } .admin-sidebar span { display: none; } .admin-main { margin-left: 70px; width: calc(100% - 70px); } }
-    </style>
 </head>
-<body>
+<body class="admin-body">
+    <!-- Login Page -->
     <div id="login-page" class="login-page">
-        <div class="login-card">
-            <img src="assets/images/logo.png" alt="Logo" class="login-logo-img" onerror="this.style.display='none'">
-            <h2>Admin Panel</h2>
-            <p style="margin: 10px 0 30px; color:#b9bbbe">Login to manage your server</p>
-            <input type="text" id="login-username" placeholder="Username" style="width:100%; padding:12px; margin-bottom:15px; background:#2a2e3d; border:1px solid #3a3e4d; border-radius:8px; color:white;">
-            <input type="password" id="login-password" placeholder="Password" style="width:100%; padding:12px; margin-bottom:20px; background:#2a2e3d; border:1px solid #3a3e4d; border-radius:8px; color:white;">
-            <button class="login-btn" id="login-btn">Login</button>
-        </div>
-    </div>
-
-    <div id="dashboard-page" style="display:none">
-        <div class="admin-container">
-            <div class="admin-sidebar">
-                <div class="admin-logo"><i class="fas fa-cube"></i> <span>Admin</span></div>
-                <button class="admin-nav-item active" data-tab="settings"><i class="fas fa-cog"></i> <span>Settings</span></button>
-                <button class="admin-nav-item" data-tab="ranks"><i class="fas fa-crown"></i> <span>Ranks</span></button>
-                <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-            <div class="admin-main">
-                <div class="admin-header"><h1 id="page-title">Settings</h1></div>
-                <div id="tab-settings" class="admin-tab">
-                    <form id="settings-form" class="admin-form">
-                        <div class="form-group"><label>Server Name</label><input type="text" id="set-server-name"></div>
-                        <div class="form-group"><label>Tagline</label><input type="text" id="set-tagline"></div>
-                        <div class="form-group"><label>IP Address</label><input type="text" id="set-ip"></div>
-                        <div class="form-group"><label>Port</label><input type="text" id="set-port"></div>
-                        <div class="form-group"><label>WhatsApp Link</label><input type="url" id="set-wa-link"></div>
-                        <div class="form-group"><label>Discord Link</label><input type="url" id="set-discord-link"></div>
-                        <div class="form-group"><label>TikTok Link</label><input type="url" id="set-tiktok-link"></div>
-                        <button type="submit" class="btn-primary">Save Settings</button>
-                    </form>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo">
+                    <img src="assets/images/logo.png" alt="Logo" class="login-logo-img" onerror="this.style.display='none'">
+                    <h2>Admin Panel</h2>
+                    <p>Login to manage your server</p>
                 </div>
-                <div id="tab-ranks" class="admin-tab" style="display:none">
-                    <div class="rank-actions-bar">
-                        <button class="action-btn primary" id="add-rank-btn">+ Add Rank</button>
-                        <button class="action-btn danger" id="delete-all-ranks-btn">Delete All</button>
+                
+                <form id="login-form" class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="login-username" placeholder="Username" required autofocus>
                     </div>
-                    <table class="ranks-table">
-                        <thead><tr><th>Name</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="ranks-table-body"><tr><td colspan="4">Loading...</td></tr></tbody>
-                    </table>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="login-btn" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                
+                <div class="login-footer">
+                    <p>⚠️ Authorized access only</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Dashboard -->
+    <div id="dashboard-page" style="display: none;">
+        <div class="admin-container">
+            <!-- Sidebar - FIXED (tidak ikut scroll) -->
+            <aside class="admin-sidebar">
+                <div class="admin-logo">
+                    <img src="assets/images/logo.png" alt="Logo" class="admin-logo-img" onerror="this.style.display='none'">
+                    <span>Admin Panel</span>
+                </div>
+                
+                <nav class="admin-nav">
+                    <button class="admin-nav-item active" data-tab="settings">
+                        <i class="fas fa-cog"></i> <span>Settings</span>
+                    </button>
+                    <button class="admin-nav-item" data-tab="announcement">
+                        <i class="fas fa-bullhorn"></i> <span>Announcement</span>
+                    </button>
+                    <button class="admin-nav-item" data-tab="ranks">
+                        <i class="fas fa-crown"></i> <span>Ranks</span>
+                    </button>
+                    <button class="admin-nav-item" data-tab="assets">
+                        <i class="fas fa-image"></i> <span>Assets</span>
+                    </button>
+                </nav>
+                
+                <div class="admin-user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-username" id="user-username">admin</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+                
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </button>
+            </aside>
+
+            <!-- Main Content - akan scroll, sidebar tetap -->
+            <main class="admin-main">
+                <div class="admin-header">
+                    <h1 id="page-title">Dashboard</h1>
+                    <div class="admin-status">
+                        <span class="status-dot online"></span>
+                        <span>Connected</span>
+                    </div>
+                </div>
+
+                <div id="admin-content">
+                    <!-- Settings Tab -->
+                    <div class="admin-tab" id="tab-settings">
+                        <div class="tab-header">
+                            <h2>Server Settings</h2>
+                            <p>Configure your Minecraft server information</p>
+                        </div>
+                        <form id="settings-form" class="admin-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-tag"></i> Server Name</label>
+                                    <input type="text" id="set-server-name" placeholder="My Awesome Server" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-quote-right"></i> Tagline</label>
+                                    <input type="text" id="set-tagline" placeholder="Your adventure awaits!">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-network-wired"></i> IP Address</label>
+                                    <input type="text" id="set-ip" placeholder="play.server.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-plug"></i> Port</label>
+                                    <input type="text" id="set-port" placeholder="25565" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-users"></i> Max Players</label>
+                                    <input type="number" id="set-max-player" placeholder="100">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-globe"></i> Community Count</label>
+                                    <input type="number" id="set-community-count" placeholder="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-divider">
+                                <span>Social Media Links</span>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fab fa-whatsapp"></i> WhatsApp Link</label>
+                                    <input type="url" id="set-wa-link" placeholder="https://wa.me/628123456789">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-discord"></i> Discord Link</label>
+                                    <input type="url" id="set-discord-link" placeholder="https://discord.gg/invite">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fab fa-tiktok"></i> TikTok Link</label>
+                                    <input type="url" id="set-tiktok-link" placeholder="https://tiktok.com/@username">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-instagram"></i> Instagram Link</label>
+                                    <input type="url" id="set-instagram-link" placeholder="https://instagram.com/username">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Announcement Tab -->
+                    <div class="admin-tab" id="tab-announcement" style="display: none;">
+                        <div class="tab-header">
+                            <h2>Manage Announcement</h2>
+                            <p>Create or delete server announcements</p>
+                        </div>
+                        
+                        <div class="current-announcement" id="current-announcement-card" style="display: none;">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bullhorn"></i> Current Active Announcement</h3>
+                            </div>
+                            <div class="announcement-preview">
+                                <div class="announcement-preview-header">
+                                    <strong id="current-ann-title">Title</strong>
+                                    <button class="delete-announcement-btn" id="delete-announcement-btn">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                                <p id="current-ann-content">Content</p>
+                                <small id="current-ann-date"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="announcement-divider">
+                            <span>OR Create New Announcement</span>
+                        </div>
+                        
+                        <form id="announcement-form" class="admin-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-heading"></i> Title</label>
+                                <input type="text" id="ann-title" placeholder="Announcement Title" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-align-left"></i> Content</label>
+                                <textarea id="ann-content" rows="4" placeholder="Announcement content here..." required></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Publish Announcement
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Ranks Tab -->
+                    <div class="admin-tab" id="tab-ranks" style="display: none;">
+                        <div class="tab-header">
+                            <h2><i class="fas fa-crown"></i> Rank Management</h2>
+                            <p>Add, edit, or delete server ranks</p>
+                        </div>
+                        
+                        <div class="rank-actions-bar">
+                            <button class="action-btn primary" id="add-rank-btn">
+                                <i class="fas fa-plus"></i> Add New Rank
+                            </button>
+                            <button class="action-btn danger" id="delete-all-ranks-btn">
+                                <i class="fas fa-trash-alt"></i> Delete All
+                            </button>
+                            <button class="action-btn warning" id="delete-inactive-ranks-btn">
+                                <i class="fas fa-ban"></i> Delete Inactive
+                            </button>
+                            <button class="action-btn secondary" id="delete-selected-btn" disabled>
+                                <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
+                            </button>
+                        </div>
+                        
+                        <!-- Rank Cards for Mobile -->
+                        <div class="ranks-cards-container" id="ranks-cards-container">
+                            <div class="loading-state">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading ranks...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Rank Table for Desktop -->
+                        <div class="ranks-table-wrapper">
+                            <table class="ranks-table">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-col"><input type="checkbox" id="select-all-checkbox"></th>
+                                        <th>Rank Name</th>
+                                        <th>Price</th>
+                                        <th>Description</th>
+                                        <th>Benefits</th>
+                                        <th>Status</th>
+                                        <th class="actions-col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ranks-table-body">
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="empty-state">
+                                                <i class="fas fa-crown"></i>
+                                                <p>No ranks available</p>
+                                                <button class="btn btn-primary" onclick="document.getElementById('add-rank-btn').click()">
+                                                    <i class="fas fa-plus"></i> Add Your First Rank
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Assets Tab -->
+                    <div class="admin-tab" id="tab-assets" style="display: none;">
+                        <div class="tab-header">
+                            <h2><i class="fas fa-image"></i> Assets Management</h2>
+                            <p>Manage your server images and branding</p>
+                        </div>
+                        
+                        <div class="assets-grid">
+                            <div class="asset-card">
+                                <div class="asset-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <h3>Server Logo</h3>
+                                <div class="asset-preview">
+                                    <img src="assets/images/logo.png" alt="Logo" id="logo-preview" onerror="this.src='https://placehold.co/150x150/2a2e3d/5865f2?text=Logo'">
+                                </div>
+                                <div class="asset-info">
+                                    <code>assets/images/logo.png</code>
+                                    <span>Used for: Favicon, Navbar, Hero</span>
+                                </div>
+                            </div>
+
+                            <div class="asset-card">
+                                <div class="asset-icon">
+                                    <i class="fas fa-mountain"></i>
+                                </div>
+                                <h3>Background Hero</h3>
+                                <div class="asset-preview bg-preview" id="bg-preview"></div>
+                                <div class="asset-info">
+                                    <code>assets/images/bg-hero.jpg</code>
+                                    <span>Size: 1920x1080px</span>
+                                </div>
+                            </div>
+
+                            <div class="asset-card">
+                                <div class="asset-icon">
+                                    <i class="fas fa-share-alt"></i>
+                                </div>
+                                <h3>OG Image</h3>
+                                <div class="asset-preview">
+                                    <img src="assets/images/og-image.jpg" alt="OG" id="og-preview" onerror="this.src='https://placehold.co/1200x630/2a2e3d/5865f2?text=OG+Image'">
+                                </div>
+                                <div class="asset-info">
+                                    <code>assets/images/og-image.jpg</code>
+                                    <span>Size: 1200x630px</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="assets-tip">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Tips:</strong> Replace images in <code>assets/images/</code> folder, then refresh page (Ctrl+F5)
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Rank Modal -->
     <div id="rank-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3 id="modal-title">Add Rank</h3>
+            <div class="modal-header">
+                <h3 id="modal-title">Add Rank</h3>
+                <span class="close-modal">&times;</span>
+            </div>
             <form id="rank-form">
                 <input type="hidden" id="rank-id">
-                <div class="form-group"><label>Rank Name</label><input type="text" id="rank-name" required></div>
-                <div class="form-group"><label>Price</label><input type="number" id="rank-price" required></div>
-                <div class="form-group"><label>Description</label><textarea id="rank-description" rows="2"></textarea></div>
-                <div class="form-group"><label>Benefits</label><input type="text" id="rank-benefits"></div>
-                <div class="form-group"><label><input type="checkbox" id="rank-active" checked> Active</label></div>
-                <button type="submit" class="btn-primary">Save</button>
+                <div class="form-group">
+                    <label><i class="fas fa-crown"></i> Rank Name</label>
+                    <input type="text" id="rank-name" placeholder="Warrior" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Price (IDR)</label>
+                    <input type="number" id="rank-price" placeholder="50000" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> Description</label>
+                    <textarea id="rank-description" rows="2" placeholder="Brief description of this rank"></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-list-check"></i> Benefits (comma separated)</label>
+                    <input type="text" id="rank-benefits" placeholder="/fly, /tpa, 5 sethomes, color chat">
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="rank-active" checked> Active
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Rank</button>
+                </div>
             </form>
         </div>
     </div>
@@ -128,154 +375,731 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // ==================== STATE MANAGEMENT ====================
         let sessionToken = null;
+        let currentAdmin = null;
         let currentRanks = [];
-
-        // Auth
-        document.getElementById('login-btn').onclick = async () => {
+        let selectedRanks = new Set();
+        let currentAnnouncement = null;
+        
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userUsernameSpan = document.getElementById('user-username');
+        const selectedCountSpan = document.getElementById('selected-count');
+        
+        // ==================== AUTHENTICATION ====================
+        
+        async function checkSession() {
+            const storedToken = localStorage.getItem('admin_session_token');
+            if (!storedToken) {
+                showLogin();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/check', {
+                    headers: { 'X-Session-Token': storedToken }
+                });
+                
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    sessionToken = storedToken;
+                    currentAdmin = data.admin;
+                    showDashboard();
+                } else {
+                    localStorage.removeItem('admin_session_token');
+                    showLogin();
+                }
+            } catch (error) {
+                console.error('Session check error:', error);
+                showLogin();
+            }
+        }
+        
+        function showLogin() {
+            loginPage.style.display = 'flex';
+            dashboardPage.style.display = 'none';
+            if (loginForm) loginForm.reset();
+        }
+        
+        function showDashboard() {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            if (userUsernameSpan && currentAdmin) {
+                userUsernameSpan.textContent = currentAdmin.username;
+            }
+            
+            loadSettings();
+            loadRanks();
+            loadAnnouncement();
+            loadAssetsPreview();
+            showToast('Welcome back!', 'success');
+        }
+        
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            const res = await fetch('/api/admin/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-            if (data.success) {
-                sessionToken = data.token;
-                localStorage.setItem('admin_token', sessionToken);
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('dashboard-page').style.display = 'block';
-                loadSettings();
-                loadRanks();
-            } else { alert('Login failed'); }
-        };
-
-        document.getElementById('logout-btn').onclick = () => {
-            sessionToken = null;
-            localStorage.removeItem('admin_token');
-            document.getElementById('login-page').style.display = 'flex';
-            document.getElementById('dashboard-page').style.display = 'none';
-        };
-
-        function getHeaders() { return { 'Content-Type': 'application/json', 'X-Session-Token': sessionToken }; }
-
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+                
+                if (data.success) {
+                    sessionToken = data.token;
+                    currentAdmin = data.admin;
+                    localStorage.setItem('admin_session_token', sessionToken);
+                    showDashboard();
+                    showToast('Login successful!', 'success');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showToast(error.message || 'Login failed!', 'error');
+                document.getElementById('login-password').value = '';
+                document.getElementById('login-password').focus();
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                if (sessionToken) {
+                    await fetch('/api/admin/logout', {
+                        method: 'POST',
+                        headers: { 'X-Session-Token': sessionToken }
+                    });
+                }
+                sessionToken = null;
+                currentAdmin = null;
+                localStorage.removeItem('admin_session_token');
+                showLogin();
+                showToast('Logged out successfully!', 'success');
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Logout failed!', 'error');
+            }
+        });
+        
+        // ==================== API CALLS ====================
+        
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'X-Session-Token': sessionToken
+            };
+        }
+        
+        // Load settings
         async function loadSettings() {
-            const res = await fetch('/api/settings');
-            const s = await res.json();
-            document.getElementById('set-server-name').value = s.server_name || '';
-            document.getElementById('set-tagline').value = s.tagline || '';
-            document.getElementById('set-ip').value = s.ip || '';
-            document.getElementById('set-port').value = s.port || '';
-            document.getElementById('set-wa-link').value = s.wa_link || '';
-            document.getElementById('set-discord-link').value = s.discord_link || '';
-            document.getElementById('set-tiktok-link').value = s.tiktok_link || '';
+            try {
+                const response = await fetch('/api/settings');
+                const settings = await response.json();
+                
+                document.getElementById('set-server-name').value = settings.server_name || '';
+                document.getElementById('set-tagline').value = settings.tagline || 'Your adventure awaits!';
+                document.getElementById('set-ip').value = settings.ip || '';
+                document.getElementById('set-port').value = settings.port || '';
+                document.getElementById('set-max-player').value = settings.max_player || '';
+                document.getElementById('set-community-count').value = settings.community_count || '';
+                document.getElementById('set-wa-link').value = settings.wa_link || '';
+                document.getElementById('set-discord-link').value = settings.discord_link || '';
+                document.getElementById('set-tiktok-link').value = settings.tiktok_link || '';
+                document.getElementById('set-instagram-link').value = settings.instagram_link || '';
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
         }
-
-        document.getElementById('settings-form').onsubmit = async (e) => {
+        
+        // Save settings
+        document.getElementById('settings-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await fetch('/api/settings', {
-                method: 'POST', headers: getHeaders(),
-                body: JSON.stringify({
-                    server_name: document.getElementById('set-server-name').value,
-                    tagline: document.getElementById('set-tagline').value,
-                    ip: document.getElementById('set-ip').value,
-                    port: document.getElementById('set-port').value,
-                    wa_link: document.getElementById('set-wa-link').value,
-                    discord_link: document.getElementById('set-discord-link').value,
-                    tiktok_link: document.getElementById('set-tiktok-link').value
-                })
-            });
-            showToast('Settings saved!');
-        };
-
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            const settings = {
+                server_name: document.getElementById('set-server-name').value,
+                tagline: document.getElementById('set-tagline').value,
+                ip: document.getElementById('set-ip').value,
+                port: document.getElementById('set-port').value,
+                max_player: parseInt(document.getElementById('set-max-player').value) || 100,
+                community_count: parseInt(document.getElementById('set-community-count').value) || 0,
+                wa_link: document.getElementById('set-wa-link').value,
+                discord_link: document.getElementById('set-discord-link').value,
+                tiktok_link: document.getElementById('set-tiktok-link').value,
+                instagram_link: document.getElementById('set-instagram-link').value
+            };
+            
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.status === 401) {
+                    showToast('Session expired', 'error');
+                    logout();
+                    return;
+                }
+                
+                if (response.ok) {
+                    showToast('Settings saved!', 'success');
+                } else {
+                    showToast('Error saving settings', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error saving settings', 'error');
+            }
+        });
+        
+        // Load ranks
         async function loadRanks() {
-            const res = await fetch('/api/ranks');
-            currentRanks = await res.json();
-            const tbody = document.getElementById('ranks-table-body');
-            tbody.innerHTML = currentRanks.map(r => `
-                <tr>
-                    <td>${r.name}</td>
-                    <td>Rp ${r.price.toLocaleString()}</td>
-                    <td>${r.is_active ? 'Active' : 'Inactive'}</td>
-                    <td><button class="edit-btn" onclick="editRank(${r.id})">Edit</button><button class="delete-btn" onclick="deleteRank(${r.id})">Delete</button></td>
-                </tr>
-            `).join('');
+            try {
+                const response = await fetch('/api/ranks');
+                currentRanks = await response.json();
+                renderRanks();
+            } catch (error) {
+                console.error('Error loading ranks:', error);
+            }
         }
-
-        window.editRank = (id) => {
+        
+        // Render ranks
+        function renderRanks() {
+            const tbody = document.getElementById('ranks-table-body');
+            const cardsContainer = document.getElementById('ranks-cards-container');
+            
+            if (!currentRanks || currentRanks.length === 0) {
+                const emptyHtml = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-crown"></i>
+                                <p>No ranks available</p>
+                                <button class="btn btn-primary" onclick="document.getElementById('add-rank-btn').click()">
+                                    <i class="fas fa-plus"></i> Add Your First Rank
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (tbody) tbody.innerHTML = emptyHtml;
+                if (cardsContainer) cardsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-crown"></i>
+                        <p>No ranks available</p>
+                        <button class="btn btn-primary" onclick="document.getElementById('add-rank-btn').click()">
+                            <i class="fas fa-plus"></i> Add First Rank
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render table
+            if (tbody) {
+                tbody.innerHTML = currentRanks.map(rank => `
+                    <tr data-rank-id="${rank.id}">
+                        <td class="checkbox-col">
+                            <input type="checkbox" class="rank-checkbox" data-id="${rank.id}">
+                        </td>
+                        <td><strong>${escapeHtml(rank.name)}</strong></td>
+                        <td class="price-cell">Rp ${formatNumber(rank.price)}</td>
+                        <td>${escapeHtml(rank.description?.substring(0, 40) || '-')}</td>
+                        <td>${escapeHtml(rank.benefits?.substring(0, 40) || '-')}</td>
+                        <td><span class="status-badge ${rank.is_active ? 'active' : 'inactive'}">${rank.is_active ? 'Active' : 'Inactive'}</span></td>
+                        <td class="actions-col">
+                            <button class="edit-rank-btn" data-id="${rank.id}" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="delete-rank-btn" data-id="${rank.id}" title="Delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                document.querySelectorAll('.edit-rank-btn').forEach(btn => {
+                    btn.addEventListener('click', () => editRank(parseInt(btn.dataset.id)));
+                });
+                document.querySelectorAll('.delete-rank-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteRank(parseInt(btn.dataset.id)));
+                });
+                document.querySelectorAll('.rank-checkbox').forEach(cb => {
+                    cb.addEventListener('change', () => toggleRankSelection(parseInt(cb.dataset.id)));
+                });
+            }
+            
+            // Render cards for mobile
+            if (cardsContainer) {
+                cardsContainer.innerHTML = currentRanks.map(rank => `
+                    <div class="rank-card-item ${!rank.is_active ? 'inactive' : ''}">
+                        <div class="rank-card-header">
+                            <h3>${escapeHtml(rank.name)}</h3>
+                            <span class="rank-card-status ${rank.is_active ? 'active' : 'inactive'}">${rank.is_active ? 'Active' : 'Inactive'}</span>
+                        </div>
+                        <div class="rank-card-price">Rp ${formatNumber(rank.price)}</div>
+                        <div class="rank-card-desc">${escapeHtml(rank.description || 'No description')}</div>
+                        <div class="rank-card-benefits">
+                            ${rank.benefits ? rank.benefits.split(',').slice(0, 3).map(b => `<span class="benefit-tag">✓ ${escapeHtml(b.trim())}</span>`).join('') : '<span class="benefit-tag">No benefits listed</span>'}
+                        </div>
+                        <div class="rank-card-actions">
+                            <button class="edit-rank-btn" data-id="${rank.id}"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-rank-btn" data-id="${rank.id}"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.querySelectorAll('#ranks-cards-container .edit-rank-btn').forEach(btn => {
+                    btn.addEventListener('click', () => editRank(parseInt(btn.dataset.id)));
+                });
+                document.querySelectorAll('#ranks-cards-container .delete-rank-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteRank(parseInt(btn.dataset.id)));
+                });
+            }
+        }
+        
+        function toggleRankSelection(rankId) {
+            if (selectedRanks.has(rankId)) {
+                selectedRanks.delete(rankId);
+            } else {
+                selectedRanks.add(rankId);
+            }
+            updateDeleteSelectedButton();
+        }
+        
+        // Select all
+        document.getElementById('select-all-checkbox')?.addEventListener('change', (e) => {
+            const checkboxes = document.querySelectorAll('.rank-checkbox');
+            if (e.target.checked) {
+                checkboxes.forEach(cb => {
+                    cb.checked = true;
+                    selectedRanks.add(parseInt(cb.dataset.id));
+                });
+            } else {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    selectedRanks.clear();
+                });
+            }
+            updateDeleteSelectedButton();
+        });
+        
+        function updateDeleteSelectedButton() {
+            const btn = document.getElementById('delete-selected-btn');
+            if (btn) {
+                btn.disabled = selectedRanks.size === 0;
+                if (selectedCountSpan) selectedCountSpan.textContent = selectedRanks.size;
+            }
+        }
+        
+        // Delete selected
+        document.getElementById('delete-selected-btn')?.addEventListener('click', async () => {
+            if (selectedRanks.size === 0) return;
+            if (!confirm(`Delete ${selectedRanks.size} selected rank(s)?`)) return;
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            let deletedCount = 0;
+            for (const id of selectedRanks) {
+                try {
+                    const response = await fetch(`/api/ranks/${id}`, {
+                        method: 'DELETE',
+                        headers: getHeaders()
+                    });
+                    if (response.ok) deletedCount++;
+                } catch (error) {
+                    console.error(`Error deleting rank ${id}:`, error);
+                }
+            }
+            
+            selectedRanks.clear();
+            document.getElementById('select-all-checkbox').checked = false;
+            showToast(`Deleted ${deletedCount} rank(s)!`, 'success');
+            loadRanks();
+        });
+        
+        // Delete all ranks
+        document.getElementById('delete-all-ranks-btn')?.addEventListener('click', async () => {
+            if (!confirm('⚠️ WARNING: This will delete ALL ranks permanently! Are you absolutely sure?')) return;
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/ranks', {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    showToast('All ranks deleted!', 'success');
+                    selectedRanks.clear();
+                    loadRanks();
+                } else {
+                    showToast('Error deleting ranks', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error deleting ranks', 'error');
+            }
+        });
+        
+        // Delete inactive ranks
+        document.getElementById('delete-inactive-ranks-btn')?.addEventListener('click', async () => {
+            const inactiveRanks = currentRanks.filter(rank => !rank.is_active);
+            if (inactiveRanks.length === 0) {
+                showToast('No inactive ranks to delete', 'info');
+                return;
+            }
+            if (!confirm(`Delete ${inactiveRanks.length} inactive rank(s)?`)) return;
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/ranks/inactive', {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    showToast(`Deleted ${inactiveRanks.length} inactive ranks!`, 'success');
+                    selectedRanks.clear();
+                    loadRanks();
+                } else {
+                    showToast('Error deleting inactive ranks', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error deleting ranks', 'error');
+            }
+        });
+        
+        // Rank Modal
+        const rankModal = document.getElementById('rank-modal');
+        document.getElementById('add-rank-btn')?.addEventListener('click', () => showRankModal());
+        document.getElementById('cancel-modal-btn')?.addEventListener('click', () => rankModal.style.display = 'none');
+        document.querySelector('.close-modal')?.addEventListener('click', () => rankModal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target === rankModal) rankModal.style.display = 'none';
+        });
+        
+        function showRankModal(rank = null) {
+            const modalTitle = document.getElementById('modal-title');
+            
+            if (rank) {
+                modalTitle.textContent = 'Edit Rank';
+                document.getElementById('rank-id').value = rank.id;
+                document.getElementById('rank-name').value = rank.name;
+                document.getElementById('rank-price').value = rank.price;
+                document.getElementById('rank-description').value = rank.description || '';
+                document.getElementById('rank-benefits').value = rank.benefits || '';
+                document.getElementById('rank-active').checked = rank.is_active;
+            } else {
+                modalTitle.textContent = 'Add Rank';
+                document.getElementById('rank-form').reset();
+                document.getElementById('rank-id').value = '';
+                document.getElementById('rank-active').checked = true;
+            }
+            
+            rankModal.style.display = 'block';
+        }
+        
+        function editRank(id) {
             const rank = currentRanks.find(r => r.id === id);
-            document.getElementById('rank-id').value = rank.id;
-            document.getElementById('rank-name').value = rank.name;
-            document.getElementById('rank-price').value = rank.price;
-            document.getElementById('rank-description').value = rank.description || '';
-            document.getElementById('rank-benefits').value = rank.benefits || '';
-            document.getElementById('rank-active').checked = rank.is_active;
-            document.getElementById('modal-title').innerText = 'Edit Rank';
-            document.getElementById('rank-modal').style.display = 'block';
-        };
-
-        window.deleteRank = async (id) => {
-            if (!confirm('Delete this rank?')) return;
-            await fetch(`/api/ranks/${id}`, { method: 'DELETE', headers: getHeaders() });
-            loadRanks();
-            showToast('Rank deleted');
-        };
-
-        document.getElementById('add-rank-btn').onclick = () => {
-            document.getElementById('rank-form').reset();
-            document.getElementById('rank-id').value = '';
-            document.getElementById('modal-title').innerText = 'Add Rank';
-            document.getElementById('rank-modal').style.display = 'block';
-        };
-
-        document.getElementById('delete-all-ranks-btn').onclick = async () => {
-            if (!confirm('Delete ALL ranks?')) return;
-            await fetch('/api/ranks', { method: 'DELETE', headers: getHeaders() });
-            loadRanks();
-            showToast('All ranks deleted');
-        };
-
-        document.getElementById('rank-form').onsubmit = async (e) => {
+            if (rank) showRankModal(rank);
+        }
+        
+        async function deleteRank(id) {
+            if (!confirm('Are you sure you want to delete this rank?')) return;
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/ranks/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    showToast('Rank deleted!', 'success');
+                    if (selectedRanks.has(id)) selectedRanks.delete(id);
+                    loadRanks();
+                } else {
+                    showToast('Error deleting rank', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error deleting rank', 'error');
+            }
+        }
+        
+        // Save rank
+        document.getElementById('rank-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('rank-id').value;
-            const data = {
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            const rankId = document.getElementById('rank-id').value;
+            const rankData = {
                 name: document.getElementById('rank-name').value,
                 price: parseInt(document.getElementById('rank-price').value),
                 description: document.getElementById('rank-description').value,
                 benefits: document.getElementById('rank-benefits').value,
                 is_active: document.getElementById('rank-active').checked
             };
-            const url = id ? `/api/ranks/${id}` : '/api/ranks';
-            const method = id ? 'PUT' : 'POST';
-            await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(data) });
-            document.getElementById('rank-modal').style.display = 'none';
-            loadRanks();
-            showToast(id ? 'Rank updated' : 'Rank added');
-        };
-
-        document.querySelector('.close-modal').onclick = () => document.getElementById('rank-modal').style.display = 'none';
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+            
+            const url = rankId ? `/api/ranks/${rankId}` : '/api/ranks';
+            const method = rankId ? 'PUT' : 'POST';
+            
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: getHeaders(),
+                    body: JSON.stringify(rankData)
+                });
+                
+                if (response.ok) {
+                    showToast(rankId ? 'Rank updated!' : 'Rank added!', 'success');
+                    rankModal.style.display = 'none';
+                    loadRanks();
+                } else {
+                    showToast('Error saving rank', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error saving rank', 'error');
+            }
+        });
+        
+        // Load announcement
+        async function loadAnnouncement() {
+            try {
+                const response = await fetch('/api/announcement');
+                currentAnnouncement = await response.json();
+                
+                const currentCard = document.getElementById('current-announcement-card');
+                const currentTitle = document.getElementById('current-ann-title');
+                const currentContent = document.getElementById('current-ann-content');
+                const currentDate = document.getElementById('current-ann-date');
+                
+                if (currentAnnouncement && currentAnnouncement.id) {
+                    if (currentCard) currentCard.style.display = 'block';
+                    if (currentTitle) currentTitle.textContent = currentAnnouncement.title;
+                    if (currentContent) currentContent.textContent = currentAnnouncement.content;
+                    if (currentDate) currentDate.textContent = `Created: ${new Date(currentAnnouncement.created_at).toLocaleString()}`;
+                    document.getElementById('ann-title').value = '';
+                    document.getElementById('ann-content').value = '';
+                } else {
+                    if (currentCard) currentCard.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading announcement:', error);
+            }
         }
-
-        document.querySelectorAll('.admin-nav-item').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+        
+        // Delete announcement
+        document.getElementById('delete-announcement-btn')?.addEventListener('click', async () => {
+            if (!currentAnnouncement || !currentAnnouncement.id) {
+                showToast('No announcement to delete', 'error');
+                return;
+            }
+            
+            if (!confirm(`Delete "${currentAnnouncement.title}"?`)) return;
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/announcement', {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    showToast('Announcement deleted!', 'success');
+                    currentAnnouncement = null;
+                    await loadAnnouncement();
+                } else {
+                    showToast('Error deleting announcement', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error deleting announcement', 'error');
+            }
+        });
+        
+        // Save announcement
+        document.getElementById('announcement-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!sessionToken) {
+                showToast('Session expired', 'error');
+                logout();
+                return;
+            }
+            
+            const announcement = {
+                title: document.getElementById('ann-title').value,
+                content: document.getElementById('ann-content').value
+            };
+            
+            if (!announcement.title || !announcement.content) {
+                showToast('Fill title and content', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/announcement', {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(announcement)
+                });
+                
+                if (response.ok) {
+                    showToast('Announcement published!', 'success');
+                    document.getElementById('announcement-form').reset();
+                    await loadAnnouncement();
+                } else {
+                    showToast('Error publishing announcement', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error publishing announcement', 'error');
+            }
+        });
+        
+        // Load assets preview
+        function loadAssetsPreview() {
+            const logoPreview = document.getElementById('logo-preview');
+            if (logoPreview) {
+                logoPreview.src = 'assets/images/logo.png?' + Date.now();
+            }
+            
+            const ogPreview = document.getElementById('og-preview');
+            if (ogPreview) {
+                ogPreview.src = 'assets/images/og-image.jpg?' + Date.now();
+            }
+            
+            const bgPreview = document.getElementById('bg-preview');
+            if (bgPreview) {
+                const img = new Image();
+                img.src = 'assets/images/bg-hero.jpg?' + Date.now();
+                img.onload = () => {
+                    bgPreview.style.backgroundImage = `url('assets/images/bg-hero.jpg?${Date.now()}')`;
+                    bgPreview.style.backgroundSize = 'cover';
+                    bgPreview.style.backgroundPosition = 'center';
+                };
+            }
+        }
+        
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.admin-nav-item');
+        const pageTitle = document.getElementById('page-title');
+        const tabTitles = { settings: 'Settings', announcement: 'Announcement', ranks: 'Rank Management', assets: 'Assets' };
+        
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                
                 const tab = btn.dataset.tab;
                 document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
-                document.getElementById(`tab-${tab}`).style.display = 'block';
-                document.getElementById('page-title').innerText = btn.innerText.trim();
-            };
+                const activeTab = document.getElementById(`tab-${tab}`);
+                if (activeTab) activeTab.style.display = 'block';
+                if (pageTitle) pageTitle.textContent = tabTitles[tab] || 'Dashboard';
+                if (tab === 'assets') loadAssetsPreview();
+                if (tab === 'ranks') loadRanks();
+            });
         });
-
-        const token = localStorage.getItem('admin_token');
-        if (token) { sessionToken = token; document.getElementById('login-page').style.display = 'none'; document.getElementById('dashboard-page').style.display = 'block'; loadSettings(); loadRanks(); }
+        
+        // Helper functions
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        function showToast(message, type = 'info') {
+            let toast = document.getElementById('toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast';
+                toast.className = 'toast';
+                document.body.appendChild(toast);
+            }
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            toast.style.background = type === 'error' ? '#ed4245' : type === 'success' ? '#57f287' : '#5865f2';
+            toast.style.color = type === 'success' ? '#1e2230' : 'white';
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function logout() {
+            sessionToken = null;
+            currentAdmin = null;
+            localStorage.removeItem('admin_session_token');
+            showLogin();
+        }
+        
+        // Initialize
+        checkSession();
     </script>
 </body>
 </html>
